@@ -17,56 +17,56 @@ pipeline {
         stage('deploy-to-dev') {
             steps {
                 script {
-                    deployGreetings('dev', 7001)
+                    deploy('dev', 7001)
                 }
             }
         }
         stage('tests-on-dev') {
             steps {
                 script {
-                    testGreetings('dev')
+                    test('dev')
                 }
             }
         }
         stage('deploy-to-stg') {
             steps {
                 script {
-                    deployGreetings('stg', 7002)
+                    deploy('stg', 7002)
                 }
             }
         }
         stage('tests-on-stg') {
             steps {
                 script {
-                    testGreetings('stg')
+                    test('stg')
                 }
             }
         }
         stage('deploy-to-preprod') {
             steps {
                 script {
-                    deployGreetings('preprod', 7003)
+                    deploy('preprod', 7003)
                 }
             }
         }
         stage('tests-on-preprod') {
             steps {
                 script {
-                    testGreetings('preprod')
+                    test('preprod')
                 }
             }
         }
         stage('deploy-to-prod') {
             steps {
                 script {
-                    deployGreetings('prod', 7004)
+                    deploy('prod', 7004)
                 }
             }
         }
         stage('tests-on-prod') {
             steps {
                 script {
-                    testGreetings('prod')
+                    test('prod')
                 }
             }
         }
@@ -82,7 +82,7 @@ def installPipDeps() {
     echo 'Dependencies successfully installed..'
 }
 
-def deployGreetings(String envName, int port) {
+def deploy(String envName, int port) {
     echo "Deployment to ${envName} has started.."
     git branch: 'main', poll: false, url: 'https://github.com/mtararujs/python-greetings.git'
     sh 'ls -la'
@@ -93,7 +93,7 @@ def deployGreetings(String envName, int port) {
     echo "Deployment to ${envName} finished.."
 }
 
-def testGreetings(String envName) {
+def test(String envName) {
     echo "Testing Greetings API on ${envName} has started.."
     git branch: 'main', poll: false, url: 'https://github.com/mtararujs/course-js-api-framework.git'
     sh 'npm install'
