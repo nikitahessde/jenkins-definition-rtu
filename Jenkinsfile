@@ -88,8 +88,8 @@ def deployGreetings(String envName, int port) {
     sh 'ls -la'
     sh 'python3 -m venv venv'
     sh './venv/bin/python -m pip install -r requirements.txt'
-    sh "pm2 delete greetings-app-${envName} || true"
-    sh "pm2 start app.py --name greetings-app-${envName} --interpreter ./venv/bin/python --port ${port}"
+    sh "npx --yes pm2 delete greetings-app-${envName} || true"
+    sh "npx --yes pm2 start app.py --name greetings-app-${envName} --interpreter ./venv/bin/python -- --port ${port}"
     echo "Deployment to ${envName} finished.."
 }
 
