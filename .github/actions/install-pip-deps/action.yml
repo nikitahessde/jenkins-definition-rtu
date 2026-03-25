@@ -1,0 +1,29 @@
+name: install-pip-deps
+description: Installs python-greetings dependencies in a virtual environment
+
+runs:
+  using: composite
+  steps:
+    - name: Clone python-greetings repository
+      uses: actions/checkout@v6
+      with:
+        repository: mtararujs/python-greetings
+        path: python-greetings
+
+    - name: Create Python virtual environment
+      shell: bash
+      working-directory: python-greetings
+      run: |
+        echo "Creating Python virtual environment.."
+        python3 -m venv venv
+
+    - name: Install dependencies from requirements.txt
+      shell: bash
+      working-directory: python-greetings
+      run: |
+        echo "Installing Python dependencies.."
+        ./venv/bin/python -m pip install -r requirements.txt
+
+    - name: Finish install-pip-deps stage
+      shell: bash
+      run: echo "Dependencies successfully installed.."

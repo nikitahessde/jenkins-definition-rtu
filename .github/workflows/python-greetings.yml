@@ -1,0 +1,100 @@
+name: python-greetings
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  install-pip-deps:
+    runs-on: self-hosted
+    steps:
+        uses: actions/checkout@v6
+        run: echo "Installing all required dependencies.."
+        uses: ./.github/actions/install-pip-deps
+
+  deploy-to-dev:
+    runs-on: self-hosted
+    needs: install-pip-deps
+    steps:
+        uses: actions/checkout@v6
+        run: echo "Deployment to dev has started.."
+        uses: ./.github/actions/deploy
+        with:
+          env_name: dev
+          port: "7001"
+
+  tests-on-dev:
+    runs-on: self-hosted
+    needs: deploy-to-dev
+    steps:
+        uses: actions/checkout@v6
+        run: echo "Testing Greetings API on dev has started.."
+        uses: ./.github/actions/test
+        with:
+          env_name: dev
+
+  deploy-to-stg:
+    runs-on: self-hosted
+    needs: tests-on-dev
+    steps:
+        uses: actions/checkout@v6
+        run: echo "Deployment to stg has started.."
+        uses: ./.github/actions/deploy
+        with:
+          env_name: stg
+          port: "7002"
+
+  tests-on-stg:
+    runs-on: self-hosted
+    needs: deploy-to-stg
+    steps:
+        uses: actions/checkout@v6
+        run: echo "Testing Greetings API on stg has started.."
+        uses: ./.github/actions/test
+        with:
+          env_name: stg
+
+  deploy-to-preprod:
+    runs-on: self-hosted
+    needs: tests-on-stg
+    steps:
+        uses: actions/checkout@v6
+        run: echo "Deployment to preprod has started.."
+        uses: ./.github/actions/deploy
+        with:
+          env_name: preprod
+          port: "7003"
+
+  tests-on-preprod:
+    runs-on: self-hosted
+    needs: deploy-to-preprod
+    steps:
+        uses: actions/checkout@v6
+        run: echo "Testing Greetings API on preprod has started.."
+        uses: ./.github/actions/test
+        with:
+          env_name: preprod
+
+  deploy-to-prod:
+    runs-on: self-hosted
+    needs: tests-on-preprod
+    steps:
+        uses: actions/checkout@v6
+        run: echo "Deployment to prod has started.."
+        uses: ./.github/actions/deploy
+        with:
+          env_name: prod
+          port: "7004"
+
+  tests-on-prod:
+    name: Tests-on-prod
+    runs-on: self-hosted
+    needs: deploy-to-prod
+    steps:
+        uses: actions/checkout@v6
+        run: echo "Testing Greetings API on prod has started.."
+        uses: ./.github/actions/test
+        with:
+          env_name: prod

@@ -1,0 +1,34 @@
+name: test
+description: Runs greetings API tests
+
+inputs:
+  env_name:
+    description: Environment name
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Clone test framework repository
+      uses: actions/checkout@v6
+      with:
+        repository: mtararujs/course-js-api-framework
+        path: course-js-api-framework
+
+    - name: Install npm dependencies
+      shell: bash
+      working-directory: course-js-api-framework
+      run: |
+        echo "Installing npm dependencies for greetings tests.."
+        npm install
+
+    - name: Run greetings tests
+      shell: bash
+      working-directory: course-js-api-framework
+      run: |
+        echo "Running greetings_${{ inputs.env_name }} tests.."
+        npm run greetings "greetings_${{ inputs.env_name }}"
+
+    - name: Finish test stage
+      shell: bash
+      run: echo "Testing Greetings API on ${{ inputs.env_name }} finished.."

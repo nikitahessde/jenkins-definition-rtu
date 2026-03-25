@@ -1,0 +1,44 @@
+name: deploy
+description: Deploys python-greetings
+
+inputs:
+  env_name:
+    description: Environment name
+    required: true
+  port:
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Clone python-greetings repository
+      uses: actions/checkout@v6
+      with:
+        repository: mtararujs/python-greetings
+        path: python-greetings
+
+    - name: Prepare Python environment
+      shell: bash
+      working-directory: python-greetings
+      run: |
+        echo "Preparing Python environment for ${{ inputs.env_name }}.."
+        python3 -m venv venv
+        ./venv/bin/python -m pip install -r requirements.txt
+
+    - name: Stop existing service if present
+      shell: bash
+      working-directory: python-greetings
+      run: |
+        echo "Stopping greetings-app-${{ inputs.env_name }} if it exists.."
+        npx --yes pm2 delete "greetings-app-${{ inputs.env_name }}" || true
+
+    - name: Start service with PM2
+      shell: bash
+      working-directory: python-greetings
+      run: |
+        echo "Starting greetings-app-${{ inputs.env_name }} on port ${{ inputs.port }}.."
+        npx --yes pm2 start app.py --name "greetings-app-${{ inputs.env_name }}" --interpreter ./venv/bin/python -- --port "${{ inputs.port }}"
+
+    - name: Finish deploy stage
+      shell: bash
+      run: echo "Deployment to ${{ inputs.env_name }} finished.."
