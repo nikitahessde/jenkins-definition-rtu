@@ -10,16 +10,22 @@ jobs:
   install-pip-deps:
     runs-on: self-hosted
     steps:
+      - name: Checkout pipeline repository
         uses: actions/checkout@v6
+      - name: Start install-pip-deps stage
         run: echo "Installing all required dependencies.."
+      - name: Install Python dependencies
         uses: ./.github/actions/install-pip-deps
 
   deploy-to-dev:
     runs-on: self-hosted
     needs: install-pip-deps
     steps:
+      - name: Checkout pipeline repository
         uses: actions/checkout@v6
+      - name: Start deploy-to-dev stage
         run: echo "Deployment to dev has started.."
+      - name: Deploy to dev
         uses: ./.github/actions/deploy
         with:
           env_name: dev
@@ -29,8 +35,11 @@ jobs:
     runs-on: self-hosted
     needs: deploy-to-dev
     steps:
+      - name: Checkout pipeline repository
         uses: actions/checkout@v6
+      - name: Start tests-on-dev stage
         run: echo "Testing Greetings API on dev has started.."
+      - name: Run tests on dev
         uses: ./.github/actions/test
         with:
           env_name: dev
@@ -39,8 +48,11 @@ jobs:
     runs-on: self-hosted
     needs: tests-on-dev
     steps:
+      - name: Checkout pipeline repository
         uses: actions/checkout@v6
+      - name: Start deploy-to-stg stage
         run: echo "Deployment to stg has started.."
+      - name: Deploy to stg
         uses: ./.github/actions/deploy
         with:
           env_name: stg
@@ -50,8 +62,11 @@ jobs:
     runs-on: self-hosted
     needs: deploy-to-stg
     steps:
+      - name: Checkout pipeline repository
         uses: actions/checkout@v6
+      - name: Start tests-on-stg stage
         run: echo "Testing Greetings API on stg has started.."
+      - name: Run tests on stg
         uses: ./.github/actions/test
         with:
           env_name: stg
@@ -60,8 +75,11 @@ jobs:
     runs-on: self-hosted
     needs: tests-on-stg
     steps:
+      - name: Checkout pipeline repository
         uses: actions/checkout@v6
+      - name: Start deploy-to-preprod stage
         run: echo "Deployment to preprod has started.."
+      - name: Deploy to preprod
         uses: ./.github/actions/deploy
         with:
           env_name: preprod
@@ -71,8 +89,11 @@ jobs:
     runs-on: self-hosted
     needs: deploy-to-preprod
     steps:
+      - name: Checkout pipeline repository
         uses: actions/checkout@v6
+      - name: Start tests-on-preprod stage
         run: echo "Testing Greetings API on preprod has started.."
+      - name: Run tests on preprod
         uses: ./.github/actions/test
         with:
           env_name: preprod
@@ -81,8 +102,11 @@ jobs:
     runs-on: self-hosted
     needs: tests-on-preprod
     steps:
+      - name: Checkout pipeline repository
         uses: actions/checkout@v6
+      - name: Start deploy-to-prod stage
         run: echo "Deployment to prod has started.."
+      - name: Deploy to prod
         uses: ./.github/actions/deploy
         with:
           env_name: prod
@@ -93,8 +117,11 @@ jobs:
     runs-on: self-hosted
     needs: deploy-to-prod
     steps:
+      - name: Checkout pipeline repository
         uses: actions/checkout@v6
+      - name: Start tests-on-prod stage
         run: echo "Testing Greetings API on prod has started.."
+      - name: Run tests on prod
         uses: ./.github/actions/test
         with:
           env_name: prod
